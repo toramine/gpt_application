@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 // テンプレートスキーマを定義
 const templateSchema = new mongoose.Schema({
-  title: String,
+  title: {
+    type: String,
+    unique: true, // このフィールドの値が一意であることを示す
+  },
   template: String,
   inputVariables: Number,
   contents: [String],
