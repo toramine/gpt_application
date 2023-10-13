@@ -1,0 +1,23 @@
+/* .container */
+.container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: black;
+  color: white;
+  padding: 10px;
+  height: 20px;
+}
+
+/* .wrapper */
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* .text */
+.text {
+  color: white;
+}
