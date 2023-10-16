@@ -1,0 +1,41 @@
+.content {
+  height: 100vh;
+  background-color: white;
+}
+
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; /* コンテンツを縦方向に配置 */
+  height: 100%; /* ラッパー全体の高さを100%に設定 */
+}
+
+.buttons {
+  margin-top: 30px; /* マージンを調整 */
+}
+
+.button {
+  padding: 2px;
+  text-decoration: none;
+  color: black;
+  font-size: 20px !important;
+  height: 100px;
+  width: 300px;
+  background-color: white;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: transform 0.1s ease-in;
+}
+
+.button.edit_page {
+  background-color: rgb(170, 207, 207);
+}
+
+.button.generate_page {
+  background-color: #bdebab;
+}
+
+.button:active {
+  transform: translateY(2px);
+}
