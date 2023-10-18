@@ -24,8 +24,11 @@ export default function Home() {
             </div>
             <div className={styles.buttons}>
               {/* TopPageBottonコンポーネントを使ってボタンを追加 */}
-              <TopPageButton buttonText="GPT API" linkHref="/generate" />
-              <TopPageButton buttonText="Template編集" linkHref="/crud/read" />
+              <TopPageButton buttonText="GPT API" linkHref="/gpt" />
+              <TopPageButton
+                buttonText="Template編集"
+                linkHref="/template/read"
+              />
             </div>
           </div>
         </div>
