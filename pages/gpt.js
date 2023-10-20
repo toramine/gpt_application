@@ -9,7 +9,8 @@ require("dotenv").config();
 const Gpt = () => {
   const [selectedButton, setSelectedButton] = useState("gpt-3.5-turbo");
   const [question, setQuestion] = useState("");
-  const [questionHistory, setQuestionHistory] = useState([]);
+  const [submitModel, setSubmitModel] = useState("");
+  const [submitQuestion, setSubmitQuestion] = useState("");
   const [templateFlag, setTemplateFlag] = useState(false);
   const [queryResult, setQueryResult] = useState("");
 
@@ -26,8 +27,8 @@ const Gpt = () => {
   };
 
   const handleSubmit = async () => {
-    const responseText = `選択: ${selectedButton}, 質問: ${question}`;
-    setQuestionHistory(responseText);
+    setSubmitModel(`選択： ${selectedButton}`);
+    setSubmitQuestion(question);
     // 質問を送信する
     const response = await sendQuestionToServer(
       selectedButton,
@@ -35,7 +36,7 @@ const Gpt = () => {
       templateFlag
     );
     // レスポンスをupdateQueryResultに格納する
-    updateQueryResult(response);
+    updateQueryResult(JSON.stringify(response));
   };
 
   const sendQuestionToServer = async (
@@ -68,7 +69,9 @@ const Gpt = () => {
       }
 
       // JSON形式のレスポンスを解析
-      const data = await response.json();
+      // const data = await response.json();
+      const data = response.text();
+      console.log(data);
       return data; // レスポンスデータを返す
     } catch (error) {
       console.error(error);
@@ -114,14 +117,16 @@ const Gpt = () => {
         <button className={styles["submit-button"]} onClick={handleSubmit}>
           質問を送信
         </button>
-        <div className={styles["question-history"]}>
-          <p>{questionHistory}</p>
-        </div>
         <div>
-          <p>queryResult: {queryResult}</p>
-          <button onClick={() => updateQueryResult("New Query Result")}>
-            Update queryResult
-          </button>
+          <p>{submitModel}</p>
+          <p>質問：</p>
+          <div className={styles["result-display"]}>
+            <p>{submitQuestion}</p>
+          </div>
+          <p>回答：</p>
+          <div className={styles["result-display"]}>
+            <p>{queryResult}</p>
+          </div>
         </div>
       </div>
     </div>

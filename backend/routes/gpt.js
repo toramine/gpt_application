@@ -81,8 +81,8 @@ router.post("/performance", async (req, res) => {
     console.log("question ok");
     try {
       // LLMの呼び出し
-      const response = await llm.call(question);
-      // response = "ok";
+      // const response = await llm.call(question);
+      response = "送れてるよ";
       console.log(response);
       res.send(response);
     } catch (error) {
