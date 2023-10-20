@@ -14,11 +14,12 @@ const router = require("express").Router();
 router.post("/performance", async (req, res) => {
   const model = req.body.model; //"gpt-3.5-turbo" or gpt-4
   const templateFlag = req.body.templateFlag; //テンプレートを使ってるか
-
+  console.log("model template ok");
   // LLMの準備
   const llm = new OpenAI({ modelName: model, temperature: 0.5 });
-
+  console.log("llm ok");
   if (templateFlag) {
+    console.log("flag true");
     // プロンプトテンプレート使用時の処理
     const template = req.body.template; //保存したテンプレート
     const inputVariables = req.body.inputVariables; //使用する変数の数
@@ -74,13 +75,14 @@ router.post("/performance", async (req, res) => {
       res.send(error);
     }
   } else {
+    console.log("flag false");
     // テンプレート未使用時の処理
     const question = req.body.question; // postされた質問
-
+    console.log("question ok");
     try {
       // LLMの呼び出し
       const response = await llm.call(question);
-
+      // response = "ok";
       console.log(response);
       res.send(response);
     } catch (error) {
@@ -170,7 +172,7 @@ router.post("/confirmation", async (req, res) => {
         flug: templateFlag,
         question: question,
       };
-
+      console.log(data);
       res.send(data);
     } catch (error) {
       console.error(error);
