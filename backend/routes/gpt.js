@@ -2,6 +2,7 @@ const { LLMChain } = require("langchain/chains");
 // const { ChatOpenAI } = require("langchain/chat_models/openai");
 const { PromptTemplate } = require("langchain/prompts");
 const { OpenAI } = require("langchain/llms/openai");
+const { response } = require("express");
 
 require("dotenv").config();
 
@@ -27,6 +28,7 @@ router.post("/performance", async (req, res) => {
 
     let prompt;
     let format;
+    let submitQuestion;
 
     //inputVariablesの数からプロンプトテンプレートの設定する
     switch (inputVariables) {
@@ -36,6 +38,7 @@ router.post("/performance", async (req, res) => {
           template: template,
         });
         format = { a: contents[0] };
+        submitQuestion = await prompt.format(format);
         console.log("1が選択されました。");
         break;
       case 2:
@@ -44,6 +47,7 @@ router.post("/performance", async (req, res) => {
           template: template,
         });
         format = { a: contents[0], b: contents[1] };
+        submitQuestion = await prompt.format(format);
         console.log("2が選択されました。");
         break;
       case 3:
@@ -56,6 +60,7 @@ router.post("/performance", async (req, res) => {
           b: contents[1],
           c: contents[2],
         };
+        submitQuestion = await prompt.format(format);
         console.log("3が選択されました。");
         break;
       default:
@@ -66,10 +71,14 @@ router.post("/performance", async (req, res) => {
       // チェーンの準備
       const chain = new LLMChain({ llm: llm, prompt });
 
-      let response = await chain.call(format);
-
-      console.log(response);
-      res.send(response);
+      // let gptResponse = await chain.call(format);
+      let gptResponse = "テンプレート送れてるよ";
+      console.log(gptResponse, submitQuestion);
+      const responseData = {
+        gptResponse: gptResponse,
+        submitQuestion: submitQuestion,
+      };
+      res.send(responseData);
     } catch (error) {
       console.error(error);
       res.send(error);
@@ -82,7 +91,7 @@ router.post("/performance", async (req, res) => {
     try {
       // LLMの呼び出し
       // const response = await llm.call(question);
-      response = "送れてるよ";
+      let response = "送れてるよ";
       console.log(response);
       res.send(response);
     } catch (error) {
