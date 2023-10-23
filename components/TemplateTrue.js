@@ -1,6 +1,22 @@
 import React, { useState } from "react";
 import styles from "./TemplateTrue.module.css";
 
+// テンプレートモデルのデータ
+const testDatas = [
+  {
+    template: "1+1は{a}",
+    inputVariables: 1,
+  },
+  {
+    template: "1+2は{a}{b}",
+    inputVariables: 2,
+  },
+  {
+    template: "1+3は{a}{b}{c}",
+    inputVariables: 3,
+  },
+];
+
 function TemplateTrue({
   selectedButton,
   templateFlag,
@@ -10,9 +26,24 @@ function TemplateTrue({
 }) {
   const [template, setTemplate] = useState(""); // templateの初期値は空文字列
   const [inputVariables, setInputVariables] = useState(); // inputVariablesの初期値は空の配列
-  const [contents, setContents] = useState([]); // contentsの初期値は空文字列
+  const [contents, setContents] = useState(["", "", ""]); // contentsの初期値は空文字列
+  const [selectedData, setSelectedData] = useState();
+
+  const handleDataSelect = (data) => {
+    setSelectedData(data);
+    setTemplate(data.template);
+    setInputVariables(data.inputVariables);
+  };
+
+  // コンテンツテキストの変更ハンドラー
+  const handleContentChange = (index, newText) => {
+    const updatedContents = [...contents];
+    updatedContents[index] = newText;
+    setContents(updatedContents);
+  };
 
   const handleSubmit = async () => {
+    // 選択したテンプレートの値をセット
     // 質問を送信する
     const response = await sendQuestionToServer(
       selectedButton,
@@ -21,11 +52,11 @@ function TemplateTrue({
       inputVariables,
       contents
     );
-    const gptResponse = response.gptResponse.text();
-    const submitQuestion = response.submitQuestion.text();
+    const gptResponse = JSON.stringify(response.gptResponse.text);
+    const submitQuestion = JSON.stringify(response.submitQuestion);
     // レスポンスをupdateQueryResultに格納する
     setSubmitModel(`選択： ${selectedButton}`);
-    updateQueryResult(JSON.stringify(gptResponse));
+    updateQueryResult(gptResponse);
     setSubmitQuestion(submitQuestion); //実際の質問を表示
   };
 
@@ -74,12 +105,39 @@ function TemplateTrue({
 
   return (
     <div>
-      <textarea
-        className={styles["question-input"]}
-        placeholder="質問を入力してください"
-        value={question}
-        onChange={(e) => setQuestion(e.target.value)}
-      ></textarea>
+      <div>
+        <h2>選択可能なデータ</h2>
+        <ul>
+          {testDatas.map((data, index) => (
+            <li key={index}>
+              <button onClick={() => handleDataSelect(data)}>
+                データ {index + 1}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h2>選択されたデータ</h2>
+        {selectedData ? (
+          <div>
+            <p>template: {selectedData.template}</p>
+            <p>inputVariables: {selectedData.inputVariables}</p>
+            {Array.from({ length: selectedData.inputVariables }, (v, i) => (
+              <textarea
+                key={i}
+                className={styles["question-input"]}
+                placeholder={`変数の ${i + 1} 番目を入力してください`}
+                value={contents[i]}
+                onChange={(e) => handleContentChange(i, e.target.value)}
+              ></textarea>
+            ))}
+          </div>
+        ) : (
+          <p>データが選択されていません。</p>
+        )}
+      </div>
+
       <button className={styles["submit-button"]} onClick={handleSubmit}>
         質問を送信
       </button>

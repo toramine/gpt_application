@@ -53,7 +53,13 @@ const Gpt = () => {
         <p>templateFlag: {templateFlag ? "true" : "false"}</p>
         <button onClick={toggleTemplateFlag}>Toggle templateFlag</button>
         {templateFlag ? (
-          <TemplateTrue />
+          <TemplateTrue
+            selectedButton={selectedButton}
+            templateFlag={templateFlag}
+            setSubmitModel={setSubmitModel}
+            setSubmitQuestion={setSubmitQuestion}
+            updateQueryResult={updateQueryResult}
+          />
         ) : (
           <TemplateFalse
             selectedButton={selectedButton}

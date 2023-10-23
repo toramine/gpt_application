@@ -72,7 +72,7 @@ router.post("/performance", async (req, res) => {
       const chain = new LLMChain({ llm: llm, prompt });
 
       // let gptResponse = await chain.call(format);
-      let gptResponse = "テンプレート送れてるよ";
+      let gptResponse = { text: "テンプレート送れてるよ" };
       console.log(gptResponse, submitQuestion);
       const responseData = {
         gptResponse: gptResponse,
