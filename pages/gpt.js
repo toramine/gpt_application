@@ -8,7 +8,6 @@ require("dotenv").config();
 
 const Gpt = () => {
   const [selectedButton, setSelectedButton] = useState("gpt-3.5-turbo");
-  const [question, setQuestion] = useState("");
   const [submitModel, setSubmitModel] = useState("");
   const [submitQuestion, setSubmitQuestion] = useState("");
   const [templateFlag, setTemplateFlag] = useState(false);
@@ -24,59 +23,6 @@ const Gpt = () => {
 
   const handleButtonClick = (buttonText) => {
     setSelectedButton(buttonText);
-  };
-
-  const handleSubmit = async () => {
-    setSubmitModel(`選択： ${selectedButton}`);
-    setSubmitQuestion(question);
-    // 質問を送信する
-    const response = await sendQuestionToServer(
-      selectedButton,
-      question,
-      templateFlag
-    );
-    // レスポンスをupdateQueryResultに格納する
-    updateQueryResult(JSON.stringify(response));
-  };
-
-  const sendQuestionToServer = async (
-    selectedButton,
-    question,
-    templateFlag
-  ) => {
-    // リクエストの設定
-    const requestOptions = {
-      method: "POST", // POSTリクエストを送信
-      headers: {
-        "Content-Type": "application/json", // JSON形式のデータを送信
-      },
-      body: JSON.stringify({
-        model: selectedButton,
-        templateFlag: templateFlag,
-        question: question,
-      }),
-    };
-
-    try {
-      // リクエストを送信し、レスポンスを受け取る
-      const response = await fetch(
-        "http://127.0.0.1:3060/api/gpt/performance",
-        requestOptions
-      );
-      if (!response.ok) {
-        // エラーハンドリング
-        throw new Error("質問の送信中にエラーが発生しました");
-      }
-
-      // JSON形式のレスポンスを解析
-      // const data = await response.json();
-      const data = response.text();
-      console.log(data);
-      return data; // レスポンスデータを返す
-    } catch (error) {
-      console.error(error);
-      return { result: "エラーが発生しました" }; // エラーハンドリング
-    }
   };
 
   return (
@@ -107,16 +53,23 @@ const Gpt = () => {
         <p>templateFlag: {templateFlag ? "true" : "false"}</p>
         <button onClick={toggleTemplateFlag}>Toggle templateFlag</button>
         {templateFlag ? (
-          <TemplateTrue />
+          <TemplateTrue
+            selectedButton={selectedButton}
+            templateFlag={templateFlag}
+            setSubmitModel={setSubmitModel}
+            setSubmitQuestion={setSubmitQuestion}
+            updateQueryResult={updateQueryResult}
+          />
         ) : (
           <TemplateFalse
+            selectedButton={selectedButton}
             templateFlag={templateFlag}
-            setQuestion={setQuestion}
+            setSubmitModel={setSubmitModel}
+            setSubmitQuestion={setSubmitQuestion}
+            updateQueryResult={updateQueryResult}
           />
         )}
-        <button className={styles["submit-button"]} onClick={handleSubmit}>
-          質問を送信
-        </button>
+
         <div>
           <p>{submitModel}</p>
           <p>質問：</p>
