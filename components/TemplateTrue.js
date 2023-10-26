@@ -28,6 +28,7 @@ function TemplateTrue({
   const [inputVariables, setInputVariables] = useState(); // inputVariablesの初期値は空の配列
   const [contents, setContents] = useState(["", "", ""]); // contentsの初期値は空文字列
   const [selectedData, setSelectedData] = useState();
+  const [errorMessage, setErrorMessage] = useState(""); // エラーメッセージの状態を管理
 
   const handleDataSelect = (data) => {
     setSelectedData(data);
@@ -43,7 +44,15 @@ function TemplateTrue({
   };
 
   const handleSubmit = async () => {
-    // 選択したテンプレートの値をセット
+    // バリデーション
+    if (!selectedData) {
+      // selectedData が空の場合、エラーメッセージを設定
+      setErrorMessage("データが選択されていません。");
+      return; // バリデーションエラー時は何もせずに処理を終了
+    }
+    // エラーメッセージをクリア
+    setErrorMessage("");
+
     // 質問を送信する
     const response = await sendQuestionToServer(
       selectedButton,
@@ -137,10 +146,14 @@ function TemplateTrue({
           <p>データが選択されていません。</p>
         )}
       </div>
-
       <button className={styles["submit-button"]} onClick={handleSubmit}>
         質問を送信
       </button>
+      <div>
+        {errorMessage && (
+          <p className={styles["error-message"]}>{errorMessage}</p>
+        )}
+      </div>
     </div>
   );
 }
