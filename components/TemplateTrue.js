@@ -4,16 +4,16 @@ import styles from "./TemplateTrue.module.css";
 // テンプレートモデルのデータ
 const testDatas = [
   {
-    template: "1+1は{a}",
-    inputVariables: 1,
+    template: "1+1は{aa}",
+    inputVariables: ["aa"],
   },
   {
-    template: "1+2は{a}{b}",
-    inputVariables: 2,
+    template: "1+2は{ai}{bi}",
+    inputVariables: ["ai", "bi"],
   },
   {
-    template: "1+3は{a}{b}{c}",
-    inputVariables: 3,
+    template: "1+3は{ai}{bi}{ci}",
+    inputVariables: ["ai", "bi", "ci"],
   },
 ];
 
@@ -25,7 +25,7 @@ function TemplateTrue({
   updateQueryResult,
 }) {
   const [template, setTemplate] = useState(""); // templateの初期値は空文字列
-  const [inputVariables, setInputVariables] = useState(); // inputVariablesの初期値は空の配列
+  const [inputVariables, setInputVariables] = useState([]); // inputVariablesの初期値は空の配列
   const [contents, setContents] = useState(["", "", ""]); // contentsの初期値は空文字列
   const [selectedData, setSelectedData] = useState();
   const [errorMessage, setErrorMessage] = useState(""); // エラーメッセージの状態を管理
@@ -61,7 +61,18 @@ function TemplateTrue({
       inputVariables,
       contents
     );
-    const gptResponse = JSON.stringify(response.gptResponse.text);
+
+    let gptResponse;
+
+    if (response.gptResponse) {
+      // gptResponseに値がある場合の処理
+      gptResponse = JSON.stringify(response.gptResponse.text);
+    } else {
+      // gptResponseがnullまたはundefinedの場合の処理
+      gptResponse = "gptresponseはありません";
+    }
+
+    // const gptResponse = JSON.stringify(response.gptResponse.text);
     const submitQuestion = JSON.stringify(response.submitQuestion);
     // レスポンスをupdateQueryResultに格納する
     setSubmitModel(`選択： ${selectedButton}`);
@@ -131,16 +142,19 @@ function TemplateTrue({
         {selectedData ? (
           <div>
             <p>template: {selectedData.template}</p>
-            <p>inputVariables: {selectedData.inputVariables}</p>
-            {Array.from({ length: selectedData.inputVariables }, (v, i) => (
-              <textarea
-                key={i}
-                className={styles["question-input"]}
-                placeholder={`変数の ${i + 1} 番目を入力してください`}
-                value={contents[i]}
-                onChange={(e) => handleContentChange(i, e.target.value)}
-              ></textarea>
-            ))}
+            <p>inputVariables: {selectedData.inputVariables.join(", ")}</p>
+            {Array.from(
+              { length: selectedData.inputVariables.length },
+              (v, i) => (
+                <textarea
+                  key={i}
+                  className={styles["question-input"]}
+                  placeholder={`変数の ${inputVariables[i]} を入力してください`}
+                  value={contents[i]}
+                  onChange={(e) => handleContentChange(i, e.target.value)}
+                ></textarea>
+              )
+            )}
           </div>
         ) : (
           <p>データが選択されていません。</p>

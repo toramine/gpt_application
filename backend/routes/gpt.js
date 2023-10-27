@@ -8,6 +8,17 @@ require("dotenv").config();
 
 const router = require("express").Router();
 
+// ２つのarrayをオブジェクトにする
+function arraysToObject(array1, array2) {
+  const result = {};
+
+  for (let i = 0; i < array1.length; i++) {
+    result[array1[i]] = array2[i];
+  }
+
+  return result;
+}
+
 //postで情報を受け取ってgptapiを実行しsendする
 // bodyにmodel,templateFlagは必須。
 // templateの時はtemplate, inputVariables,contentsをbodyに送る
@@ -25,47 +36,22 @@ router.post("/performance", async (req, res) => {
     const template = req.body.template; //保存したテンプレート
     const inputVariables = req.body.inputVariables; //使用する変数の数
     const contents = req.body.contents; //変数の中身の配列
+    // const arrayLength = req.body.inputVariables.length;
 
     let prompt;
     let format;
     let submitQuestion;
 
-    //inputVariablesの数からプロンプトテンプレートの設定する
-    switch (inputVariables) {
-      case 1:
-        prompt = new PromptTemplate({
-          inputVariables: ["a"],
-          template: template,
-        });
-        format = { a: contents[0] };
-        submitQuestion = await prompt.format(format);
-        console.log("1が選択されました。");
-        break;
-      case 2:
-        prompt = new PromptTemplate({
-          inputVariables: ["a", "b"],
-          template: template,
-        });
-        format = { a: contents[0], b: contents[1] };
-        submitQuestion = await prompt.format(format);
-        console.log("2が選択されました。");
-        break;
-      case 3:
-        prompt = new PromptTemplate({
-          inputVariables: ["a", "b", "c"],
-          template: template,
-        });
-        format = {
-          a: contents[0],
-          b: contents[1],
-          c: contents[2],
-        };
-        submitQuestion = await prompt.format(format);
-        console.log("3が選択されました。");
-        break;
-      default:
-        console.log("1、2、3以外が選択されました。");
-    }
+    //inputVariablesからプロンプトテンプレートの設定する
+    prompt = new PromptTemplate({
+      inputVariables: inputVariables,
+      template: template,
+    });
+
+    format = arraysToObject(inputVariables, contents);
+    console.log(format);
+    submitQuestion = await prompt.format(format);
+    console.log(submitQuestion);
 
     try {
       // チェーンの準備
