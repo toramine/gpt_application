@@ -19,7 +19,7 @@ function arraysToObject(array1, array2) {
   return result;
 }
 
-//postで情報を受け取ってgptapiを実行しsendする
+// postで情報を受け取ってgptapiを実行しsendする
 // bodyにmodel,templateFlagは必須。
 // templateの時はtemplate, inputVariables,contentsをbodyに送る
 // それ以外はquestionをbodyに送る

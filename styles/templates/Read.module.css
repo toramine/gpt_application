@@ -1,0 +1,75 @@
+/* styles.module.css */
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.pageTitle {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.createLink {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.itemList {
+  list-style: none;
+  padding: 0;
+}
+
+.item {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f0f0f0;
+}
+
+.itemContent {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 5px;
+  margin-right: 30px;
+  width: 250px; /* 横幅を 300px に設定 */
+  white-space: nowrap; /* テキストを折り返し禁止に設定 */
+  overflow: hidden; /* オーバーフローを隠す */
+  text-overflow: ellipsis; /* オーバーフローした部分を省略記号（...）で表示 */
+}
+
+.template {
+  color: black;
+  margin-right: 30px;
+  width: 500px; /* 横幅を 300px に設定 */
+  white-space: nowrap; /* テキストを折り返し禁止に設定 */
+  overflow: hidden; /* オーバーフローを隠す */
+  text-overflow: ellipsis; /* オーバーフローした部分を省略記号（...）で表示 */
+}
+
+.editButton {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 30px;
+}
+
+.editButton:hover {
+  background-color: #0056b3;
+}
+
+/* Deleteボタンのスタイルもカスタマイズ可能 */

@@ -27,7 +27,7 @@ export default function Home() {
               <TopPageButton buttonText="GPT API" linkHref="/gpt" />
               <TopPageButton
                 buttonText="Template編集"
-                linkHref="/template/read"
+                linkHref="/templates/read"
               />
             </div>
           </div>

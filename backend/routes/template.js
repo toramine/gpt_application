@@ -13,7 +13,7 @@ router.get("/read", async (req, res) => {
   await Template.find()
     .then((templates) => {
       console.log("テンプレート一覧:", templates);
-      res.status(200).send(`テンプレート一覧: ${templates}`);
+      res.status(200).send(templates);
     })
     .catch((err) => {
       console.error("テンプレートの取得中にエラーが発生しました:", err);
@@ -85,17 +85,27 @@ router.put("/update", async (req, res) => {
 });
 
 // 特定のテンプレートを削除
-router.delete("/delete", async (req, res) => {
-  Template.findOneAndDelete({ _id: req.body._id })
-    .then((deletedTemplate) => {
+router.delete("/delete/:id", async (req, res) => {
+  const deleteId = req.params.id;
+
+  try {
+    // データベースからデータを削除
+    const deletedTemplate = await Template.findByIdAndRemove(deleteId);
+
+    if (deletedTemplate) {
       console.log("削除されたテンプレート:", deletedTemplate);
-      res.status(200).send(`削除されたテンプレート: ${deletedTemplate}`);
-    })
-    .catch((err) => {
-      console.error("テンプレートの削除中にエラーが発生しました:", err);
       res
-        .status(500)
-        .send(`テンプレートの削除中にエラーが発生しました: ${err}`);
+        .status(200)
+        .json({ message: "削除されたテンプレート", deletedTemplate });
+    } else {
+      res.status(404).json({ message: "データが見つかりません" });
+    }
+  } catch (err) {
+    console.error("テンプレートの削除中にエラーが発生しました:", err);
+    res.status(500).json({
+      message: "テンプレートの削除中にエラーが発生しました",
+      error: err,
     });
+  }
 });
 module.exports = router;
