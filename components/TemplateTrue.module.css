@@ -30,3 +30,15 @@
 .error-message {
   color: red;
 }
+
+.submit-button-area {
+  height: 50px; /* 適切な高さを設定 */
+}
+
+.executing-text {
+  width: 200px;
+  color: black;
+  padding: 10px 20px;
+  border: none;
+  margin-top: 10px;
+}

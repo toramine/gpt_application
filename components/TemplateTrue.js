@@ -29,6 +29,7 @@ function TemplateTrue({
   const [contents, setContents] = useState(["", "", ""]); // contentsの初期値は空文字列
   const [selectedData, setSelectedData] = useState();
   const [errorMessage, setErrorMessage] = useState(""); // エラーメッセージの状態を管理
+  const [isExecuting, setIsExecuting] = useState(false);
 
   const handleDataSelect = (data) => {
     setSelectedData(data);
@@ -52,32 +53,36 @@ function TemplateTrue({
     }
     // エラーメッセージをクリア
     setErrorMessage("");
+    setIsExecuting(true); // 実行中フラグを立てる
 
-    // 質問を送信する
-    const response = await sendQuestionToServer(
-      selectedButton,
-      templateFlag,
-      template,
-      inputVariables,
-      contents
-    );
+    setTimeout(async () => {
+      // 質問を送信する
+      const response = await sendQuestionToServer(
+        selectedButton,
+        templateFlag,
+        template,
+        inputVariables,
+        contents
+      );
 
-    let gptResponse;
+      let gptResponse;
 
-    if (response.gptResponse) {
-      // gptResponseに値がある場合の処理
-      gptResponse = JSON.stringify(response.gptResponse.text);
-    } else {
-      // gptResponseがnullまたはundefinedの場合の処理
-      gptResponse = "gptresponseはありません";
-    }
+      if (response.gptResponse) {
+        // gptResponseに値がある場合の処理
+        gptResponse = JSON.stringify(response.gptResponse.text);
+      } else {
+        // gptResponseがnullまたはundefinedの場合の処理
+        gptResponse = "gptresponseはありません";
+      }
 
-    // const gptResponse = JSON.stringify(response.gptResponse.text);
-    const submitQuestion = JSON.stringify(response.submitQuestion);
-    // レスポンスをupdateQueryResultに格納する
-    setSubmitModel(`選択： ${selectedButton}`);
-    updateQueryResult(gptResponse);
-    setSubmitQuestion(submitQuestion); //実際の質問を表示
+      // const gptResponse = JSON.stringify(response.gptResponse.text);
+      const submitQuestion = JSON.stringify(response.submitQuestion);
+      // レスポンスをupdateQueryResultに格納する
+      setSubmitModel(`選択： ${selectedButton}`);
+      updateQueryResult(gptResponse);
+      setSubmitQuestion(submitQuestion); //実際の質問を表示
+      setIsExecuting(false); // 実行中フラグを解除する
+    }, 1000); // 1秒（1000ミリ秒）の遅延を設定
   };
 
   const sendQuestionToServer = async (
@@ -160,9 +165,15 @@ function TemplateTrue({
           <p>データが選択されていません。</p>
         )}
       </div>
-      <button className={styles["submit-button"]} onClick={handleSubmit}>
-        質問を送信
-      </button>
+      <div className={styles["submit-button-area"]}>
+        {isExecuting ? (
+          <p className={styles["executing-text"]}>実行中...</p>
+        ) : (
+          <button className={styles["submit-button"]} onClick={handleSubmit}>
+            質問を送信
+          </button>
+        )}
+      </div>
       <div>
         {errorMessage && (
           <p className={styles["error-message"]}>{errorMessage}</p>

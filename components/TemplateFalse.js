@@ -9,18 +9,24 @@ function TemplateFalse({
   updateQueryResult,
 }) {
   const [question, setQuestion] = useState("");
+  const [isExecuting, setIsExecuting] = useState(false);
 
   const handleSubmit = async () => {
     setSubmitModel(`選択： ${selectedButton}`);
     setSubmitQuestion(question);
-    // 質問を送信する
-    const response = await sendQuestionToServer(
-      selectedButton,
-      question,
-      templateFlag
-    );
-    // レスポンスをupdateQueryResultに格納する
-    updateQueryResult(JSON.stringify(response));
+    setIsExecuting(true); // 実行中フラグを立てる
+
+    setTimeout(async () => {
+      // 質問を送信する
+      const response = await sendQuestionToServer(
+        selectedButton,
+        question,
+        templateFlag
+      );
+      // レスポンスをupdateQueryResultに格納する
+      updateQueryResult(JSON.stringify(response));
+      setIsExecuting(false); // 実行中フラグを解除する
+    }, 1000); // 1秒（1000ミリ秒）の遅延を設定
   };
 
   const sendQuestionToServer = async (
@@ -71,9 +77,15 @@ function TemplateFalse({
         value={question}
         onChange={(e) => setQuestion(e.target.value)}
       ></textarea>
-      <button className={styles["submit-button"]} onClick={handleSubmit}>
-        質問を送信
-      </button>
+      <div className={styles["submit-button-area"]}>
+        {isExecuting ? (
+          <p className={styles["executing-text"]}>実行中...</p>
+        ) : (
+          <button className={styles["submit-button"]} onClick={handleSubmit}>
+            質問を送信
+          </button>
+        )}
+      </div>
     </div>
   );
 }
