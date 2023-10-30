@@ -23,18 +23,21 @@ router.get("/read", async (req, res) => {
     });
 });
 // 特定の条件を持つテンプレートを取得
-router.get("/readone", async (req, res) => {
-  await Template.find({ _id: req.body._id })
-    .then((template) => {
-      console.log("条件に合致するテンプレート:", template);
-      res.status(200).send(`条件に合致するテンプレート: ${template}`);
-    })
-    .catch((err) => {
-      console.error("テンプレートの取得中にエラーが発生しました:", err);
-      res
-        .status(500)
-        .send(`テンプレートの取得中にエラーが発生しました: ${err}`);
-    });
+router.get("/readone/:id", async (req, res) => {
+  try {
+    const template = await Template.findById(req.params.id);
+
+    if (!template) {
+      // テンプレートが見つからない場合の処理
+      res.status(404).json({ error: "Template not found" });
+      return;
+    }
+
+    res.status(200).json(template);
+  } catch (err) {
+    console.error("テンプレートの取得中にエラーが発生しました:", err);
+    res.status(500).json({ error: "Error fetching template" });
+  }
 });
 // POST:template
 router.post("/create", async (req, res) => {
@@ -42,7 +45,6 @@ router.post("/create", async (req, res) => {
     title: req.body.title,
     template: req.body.template,
     inputVariables: req.body.inputVariables,
-    contents: req.body.contents,
   });
 
   await newTemplate
@@ -59,17 +61,16 @@ router.post("/create", async (req, res) => {
     });
 });
 // 特定のテンプレートを更新
-router.put("/update", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   const updateData = {
-    title: req.body.newTitle,
-    template: req.body.newTemplate,
-    inputVariables: req.body.newInputVariables,
-    contents: req.body.newContents,
+    title: req.body.title,
+    template: req.body.template,
+    inputVariables: req.body.inputVariables,
   };
 
-  await Template.findOneAndUpdate(
-    { _id: req.body._id },
-    updateData, // すべての更新データをまとめたオブジェクト
+  await Template.findByIdAndUpdate(
+    req.params.id, // 更新対象のデータの _id
+    updateData, // 更新データ
     { new: true } // 更新後のデータを取得するためのオプション
   )
     .then((updatedTemplate) => {

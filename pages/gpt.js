@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import TemplateFalse from "../components/TemplateFalse";
 import TemplateTrue from "../components/TemplateTrue";
@@ -6,7 +7,29 @@ import styles from "../styles/Gpt.module.css";
 
 require("dotenv").config();
 
-const Gpt = () => {
+export async function getServerSideProps() {
+  const templateReadURL = "http://127.0.0.1:3060/api/template/read"; // データを取得するAPIのURL
+
+  try {
+    const res = await axios.get(templateReadURL);
+    const data = res.data;
+    console.log(data);
+
+    return {
+      props: {
+        data,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        data: null, // データの取得に失敗した場合はnullを設定
+      },
+    };
+  }
+}
+
+const Gpt = ({ data }) => {
   const [selectedButton, setSelectedButton] = useState("gpt-3.5-turbo");
   const [submitModel, setSubmitModel] = useState("");
   const [submitQuestion, setSubmitQuestion] = useState("");
