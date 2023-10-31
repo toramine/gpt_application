@@ -13,7 +13,7 @@ router.get("/read", async (req, res) => {
   await Template.find()
     .then((templates) => {
       console.log("テンプレート一覧:", templates);
-      res.status(200).send(`テンプレート一覧: ${templates}`);
+      res.status(200).send(templates);
     })
     .catch((err) => {
       console.error("テンプレートの取得中にエラーが発生しました:", err);
@@ -23,18 +23,21 @@ router.get("/read", async (req, res) => {
     });
 });
 // 特定の条件を持つテンプレートを取得
-router.get("/readone", async (req, res) => {
-  await Template.find({ _id: req.body._id })
-    .then((template) => {
-      console.log("条件に合致するテンプレート:", template);
-      res.status(200).send(`条件に合致するテンプレート: ${template}`);
-    })
-    .catch((err) => {
-      console.error("テンプレートの取得中にエラーが発生しました:", err);
-      res
-        .status(500)
-        .send(`テンプレートの取得中にエラーが発生しました: ${err}`);
-    });
+router.get("/readone/:id", async (req, res) => {
+  try {
+    const template = await Template.findById(req.params.id);
+
+    if (!template) {
+      // テンプレートが見つからない場合の処理
+      res.status(404).json({ error: "Template not found" });
+      return;
+    }
+
+    res.status(200).json(template);
+  } catch (err) {
+    console.error("テンプレートの取得中にエラーが発生しました:", err);
+    res.status(500).json({ error: "Error fetching template" });
+  }
 });
 // POST:template
 router.post("/create", async (req, res) => {
@@ -42,7 +45,6 @@ router.post("/create", async (req, res) => {
     title: req.body.title,
     template: req.body.template,
     inputVariables: req.body.inputVariables,
-    contents: req.body.contents,
   });
 
   await newTemplate
@@ -59,17 +61,16 @@ router.post("/create", async (req, res) => {
     });
 });
 // 特定のテンプレートを更新
-router.put("/update", async (req, res) => {
+router.put("/update/:id", async (req, res) => {
   const updateData = {
-    title: req.body.newTitle,
-    template: req.body.newTemplate,
-    inputVariables: req.body.newInputVariables,
-    contents: req.body.newContents,
+    title: req.body.title,
+    template: req.body.template,
+    inputVariables: req.body.inputVariables,
   };
 
-  await Template.findOneAndUpdate(
-    { _id: req.body._id },
-    updateData, // すべての更新データをまとめたオブジェクト
+  await Template.findByIdAndUpdate(
+    req.params.id, // 更新対象のデータの _id
+    updateData, // 更新データ
     { new: true } // 更新後のデータを取得するためのオプション
   )
     .then((updatedTemplate) => {
@@ -85,17 +86,27 @@ router.put("/update", async (req, res) => {
 });
 
 // 特定のテンプレートを削除
-router.delete("/delete", async (req, res) => {
-  Template.findOneAndDelete({ _id: req.body._id })
-    .then((deletedTemplate) => {
+router.delete("/delete/:id", async (req, res) => {
+  const deleteId = req.params.id;
+
+  try {
+    // データベースからデータを削除
+    const deletedTemplate = await Template.findByIdAndRemove(deleteId);
+
+    if (deletedTemplate) {
       console.log("削除されたテンプレート:", deletedTemplate);
-      res.status(200).send(`削除されたテンプレート: ${deletedTemplate}`);
-    })
-    .catch((err) => {
-      console.error("テンプレートの削除中にエラーが発生しました:", err);
       res
-        .status(500)
-        .send(`テンプレートの削除中にエラーが発生しました: ${err}`);
+        .status(200)
+        .json({ message: "削除されたテンプレート", deletedTemplate });
+    } else {
+      res.status(404).json({ message: "データが見つかりません" });
+    }
+  } catch (err) {
+    console.error("テンプレートの削除中にエラーが発生しました:", err);
+    res.status(500).json({
+      message: "テンプレートの削除中にエラーが発生しました",
+      error: err,
     });
+  }
 });
 module.exports = router;

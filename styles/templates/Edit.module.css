@@ -1,0 +1,81 @@
+.content {
+  width: 100%; /* ページ全体の幅 */
+  height: 100vh; /* ページ全体の高さ */
+  display: flex; /* Flexコンテナとして設定 */
+  flex-direction: column; /* 子要素を縦に並べる */
+  justify-content: center; /* 垂直方向の中央揃え */
+  align-items: center;
+}
+
+/* wrapperクラスは中央揃えを実現します */
+.wrapper {
+  background: #f4f4f4;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 40%; /* コンテンツの幅を画面の50%に設定 */
+  text-align: center; /* 子要素の中央揃え */
+}
+
+.createTitle {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.inputField,
+.textareaField {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.inputField::placeholder,
+.textareaField::placeholder {
+  font-style: italic;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputField {
+  height: 40px;
+}
+
+.textareaField {
+  height: 120px;
+}
+
+.button {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-top: 30px;
+}
+
+.button:hover {
+  background: #0056b3;
+}
+
+.readLink {
+  text-align: center;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #007bff;
+}
+
+.readLink:hover {
+  text-decoration: underline;
+}
+
+.label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}

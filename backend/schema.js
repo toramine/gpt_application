@@ -7,8 +7,7 @@ const templateSchema = new mongoose.Schema({
     unique: true, // このフィールドの値が一意であることを示す
   },
   template: String,
-  inputVariables: Number,
-  contents: [String],
+  inputVariables: [String],
 });
 
 // テンプレートモデルを作成
