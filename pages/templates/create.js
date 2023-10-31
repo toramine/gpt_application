@@ -2,7 +2,7 @@ import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import Topbar from "../../components/Topbar";
+import styles from "../../styles/templates/Create.module.css";
 
 const TemplateCreate = () => {
   const router = useRouter();
@@ -29,12 +29,6 @@ const TemplateCreate = () => {
     }
   };
 
-  const handleRemoveInput = (index) => {
-    const newInputVariables = [...formData.inputVariables];
-    newInputVariables.splice(index, 1);
-    setFormData({ ...formData, inputVariables: newInputVariables });
-  };
-
   const handleSubmit = async () => {
     try {
       await axios.post("http://127.0.0.1:3060/api/template/create", formData);
@@ -47,52 +41,45 @@ const TemplateCreate = () => {
   };
 
   return (
-    <div>
-      <Topbar pageTitle="template create" />
-      <h1>Template Create</h1>
-      <form>
-        <div>
-          <label>Title:</label>
-          <input
-            type="text"
-            name="title"
-            value={formData.title}
-            onChange={(e) => handleInputChange(e)}
-          />
-        </div>
-        <div>
-          <label>Template:</label>
-          <input
-            type="text"
-            name="template"
-            value={formData.template}
-            onChange={(e) => handleInputChange(e)}
-          />
-        </div>
-        <div>
-          {formData.inputVariables.join(", ")}
-          {/* <label>Input Variables:</label>
-          {formData.inputVariables.map((input, index) => (
-            <div key={index}>
-              <input
-                type="text"
-                name="inputVariables"
-                value={input}
-                onChange={(e) => handleInputChange(e)}
-              />
-              <button type="button" onClick={() => handleRemoveInput(index)}>
-                Remove
-              </button>
-            </div>
-          ))} */}
-        </div>
-        <button type="button" onClick={handleSubmit}>
-          Create Template
-        </button>
-      </form>
-      <Link href="/templates/read">
-        <p>read Page</p>
-      </Link>
+    <div className={styles.content}>
+      <div className={styles.wrapper}>
+        <h1 className={styles.pageTitle}>Template Create</h1>
+        <form>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Title:</label>
+            <input
+              type="text"
+              name="title"
+              className={styles.input}
+              value={formData.title}
+              onChange={(e) => handleInputChange(e)}
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>Template:</label>
+            <textarea
+              name="template"
+              className={styles.input}
+              value={formData.template}
+              onChange={(e) => handleInputChange(e)}
+            ></textarea>
+          </div>
+          <div className={styles.inputVariables}>
+            <label className={styles.label}>inputVariables:</label>
+            {formData.inputVariables.join(", ")}
+          </div>
+          <button
+            className={styles.button}
+            type="button"
+            onClick={handleSubmit}
+          >
+            Create Template
+          </button>
+        </form>
+        <Link href="/templates/read">
+          <p className={styles.link}>read Pageへ</p>
+        </Link>
+      </div>
     </div>
   );
 };

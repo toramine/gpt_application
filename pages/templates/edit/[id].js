@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import Topbar from "../../../components/Topbar";
+import styles from "../../../styles/templates/Edit.module.css";
 
 const TemplateEdit = () => {
   const router = useRouter();
@@ -71,41 +72,42 @@ const TemplateEdit = () => {
   };
 
   return (
-    <div>
-      <Topbar pageTitle="template create" />
-      <h1>Template Edit</h1>
-      <div>
-        <input
-          type="text"
-          name="title"
-          value={formData.title}
-          onChange={handleInputChange}
-          placeholder="Title"
-        />
+    <div className={styles.content}>
+      <div className={styles.wrapper}>
+        <Topbar pageTitle={styles.createTitle} />
+        <h1 className={styles.createTitle}>Template Edit</h1>
+        <div className={styles.inputContainer}>
+          <label className={styles.label}>Title:</label>
+          <input
+            type="text"
+            name="title"
+            value={formData.title}
+            onChange={handleInputChange}
+            placeholder="Title"
+            className={styles.inputField}
+          />
+        </div>
+        <div className={styles.inputContainer}>
+          <label className={styles.label}>Template:</label>
+          <textarea
+            name="template"
+            value={formData.template}
+            onChange={handleInputChange}
+            placeholder="Template"
+            className={styles.textareaField}
+          />
+        </div>
+        <div className={styles.inputContainer}>
+          <label className={styles.label}>inputVariables:</label>
+          {formData.inputVariables.join(", ")}
+        </div>
+        <button className={styles.button} onClick={handleUpdate}>
+          Update
+        </button>
+        <Link href="/templates/read">
+          <p className={styles.readLink}>Read Pageへ</p>
+        </Link>
       </div>
-      <div>
-        <input
-          type="text"
-          name="template"
-          value={formData.template}
-          onChange={handleInputChange}
-          placeholder="Template"
-        />
-      </div>
-      <div>
-        {formData.inputVariables.join(", ")}
-        {/* <input
-          type="text"
-          name="inputVariables"
-          value={formData.inputVariables.join(", ")}
-          onChange={handleInputChange}
-          placeholder="Input Variables (comma-separated)"
-        /> */}
-      </div>
-      <button onClick={handleUpdate}>Update</button>
-      <Link href="/templates/read">
-        <p>read Page</p>
-      </Link>
     </div>
   );
 };

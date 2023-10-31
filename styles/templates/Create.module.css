@@ -1,0 +1,70 @@
+/* styles.module.css */
+
+.content {
+  width: 100%; /* ページ全体の幅 */
+  height: 100vh; /* ページ全体の高さ */
+  display: flex; /* Flexコンテナとして設定 */
+  flex-direction: column; /* 子要素を縦に並べる */
+  justify-content: center; /* 垂直方向の中央揃え */
+  align-items: center;
+}
+
+/* wrapperクラスは中央揃えを実現します */
+.wrapper {
+  background: #f4f4f4;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 40%; /* コンテンツの幅を画面の50%に設定 */
+  text-align: center; /* 子要素の中央揃え */
+}
+
+.pageTitle {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.inputVariables {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+.button {
+  background-color: #0077cc;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #005599;
+}
+
+.link {
+  font-size: 16px;
+  margin-top: 20px;
+  display: inline-block;
+  text-decoration: none;
+  color: #0077cc;
+}
