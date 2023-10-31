@@ -41,3 +41,44 @@
   white-space: normal;
   word-wrap: break-word;
 }
+
+.hidden {
+  display: none;
+}
+
+.content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10; /* 他の要素より前に表示 */
+  height: 60vh; /* 画面の高さの60% */
+  width: 60vw; /* 画面の幅の80% */
+  max-height: 80vh; /* 最大の高さを画面の80%に制限 */
+  overflow-y: auto; /* スクロールバーを表示 */
+  padding: 20px; /* コンテンツとの間隔 */
+  background-color: rgba(255, 255, 255); /* ライトブルーの透明な背景 */
+  border: 5px solid #ccc; /* ボーダーを追加 */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* シャドウを追加 */
+}
+
+.visibleButton {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s, transform 0.1s; /* トランジションの追加 */
+}
+
+.visibleButton:hover {
+  background-color: #0056b3; /* ホバー時の背景色 */
+  transform: translateY(-2px); /* ホバーエフェクトでボタンを少し下に移動 */
+}
+
+.visibleButton:active {
+  background-color: #003c80; /* クリック時の背景色 */
+  transform: translateY(1px); /* クリック時のエフェクト */
+}

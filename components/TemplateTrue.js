@@ -1,21 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styles from "./TemplateTrue.module.css";
-
-// テンプレートモデルのデータ
-const testDatas = [
-  {
-    template: "1+1は{aa}",
-    inputVariables: ["aa"],
-  },
-  {
-    template: "1+2は{ai}{bi}",
-    inputVariables: ["ai", "bi"],
-  },
-  {
-    template: "1+3は{ai}{bi}{ci}",
-    inputVariables: ["ai", "bi", "ci"],
-  },
-];
 
 function TemplateTrue({
   selectedButton,
@@ -23,19 +7,13 @@ function TemplateTrue({
   setSubmitModel,
   setSubmitQuestion,
   updateQueryResult,
+  selectedTemplate,
+  selectedInputVariables,
 }) {
   const [template, setTemplate] = useState(""); // templateの初期値は空文字列
   const [inputVariables, setInputVariables] = useState([]); // inputVariablesの初期値は空の配列
-  const [contents, setContents] = useState(["", "", ""]); // contentsの初期値は空文字列
-  const [selectedData, setSelectedData] = useState();
-  const [errorMessage, setErrorMessage] = useState(""); // エラーメッセージの状態を管理
+  const [contents, setContents] = useState([]);
   const [isExecuting, setIsExecuting] = useState(false);
-
-  const handleDataSelect = (data) => {
-    setSelectedData(data);
-    setTemplate(data.template);
-    setInputVariables(data.inputVariables);
-  };
 
   // コンテンツテキストの変更ハンドラー
   const handleContentChange = (index, newText) => {
@@ -45,14 +23,6 @@ function TemplateTrue({
   };
 
   const handleSubmit = async () => {
-    // バリデーション
-    if (!selectedData) {
-      // selectedData が空の場合、エラーメッセージを設定
-      setErrorMessage("データが選択されていません。");
-      return; // バリデーションエラー時は何もせずに処理を終了
-    }
-    // エラーメッセージをクリア
-    setErrorMessage("");
     setIsExecuting(true); // 実行中フラグを立てる
 
     setTimeout(async () => {
@@ -60,8 +30,8 @@ function TemplateTrue({
       const response = await sendQuestionToServer(
         selectedButton,
         templateFlag,
-        template,
-        inputVariables,
+        selectedTemplate,
+        selectedInputVariables,
         contents
       );
 
@@ -88,8 +58,8 @@ function TemplateTrue({
   const sendQuestionToServer = async (
     selectedButton,
     templateFlag,
-    template,
-    inputVariables,
+    selectedTemplate,
+    selectedInputVariables,
     contents
   ) => {
     // リクエストの設定
@@ -101,8 +71,8 @@ function TemplateTrue({
       body: JSON.stringify({
         model: selectedButton,
         templateFlag: templateFlag,
-        template: template,
-        inputVariables: inputVariables,
+        template: selectedTemplate,
+        inputVariables: selectedInputVariables,
         contents: contents,
       }),
     };
@@ -131,39 +101,22 @@ function TemplateTrue({
   return (
     <div>
       <div>
-        <h2>選択可能なデータ</h2>
-        <ul>
-          {testDatas.map((data, index) => (
-            <li key={index}>
-              <button onClick={() => handleDataSelect(data)}>
-                データ {index + 1}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-      <div>
         <h2>選択されたデータ</h2>
-        {selectedData ? (
-          <div>
-            <p>template: {selectedData.template}</p>
-            <p>inputVariables: {selectedData.inputVariables.join(", ")}</p>
-            {Array.from(
-              { length: selectedData.inputVariables.length },
-              (v, i) => (
-                <textarea
-                  key={i}
-                  className={styles["question-input"]}
-                  placeholder={`変数の ${inputVariables[i]} を入力してください`}
-                  value={contents[i]}
-                  onChange={(e) => handleContentChange(i, e.target.value)}
-                ></textarea>
-              )
-            )}
-          </div>
-        ) : (
-          <p>データが選択されていません。</p>
-        )}
+        {/* <p>template: {selectedTemplate}</p>
+        <p>inputVariables: {selectedInputVariables}</p> */}
+        <div>
+          <p>template: {selectedTemplate}</p>
+          <p>inputVariables: {selectedInputVariables.join(", ")}</p>
+          {Array.from({ length: selectedInputVariables.length }, (v, i) => (
+            <textarea
+              key={i}
+              className={styles["question-input"]}
+              placeholder={`変数の ${selectedInputVariables[i]} を入力してください`}
+              value={contents[i]}
+              onChange={(e) => handleContentChange(i, e.target.value)}
+            ></textarea>
+          ))}
+        </div>
       </div>
       <div className={styles["submit-button-area"]}>
         {isExecuting ? (
@@ -172,11 +125,6 @@ function TemplateTrue({
           <button className={styles["submit-button"]} onClick={handleSubmit}>
             質問を送信
           </button>
-        )}
-      </div>
-      <div>
-        {errorMessage && (
-          <p className={styles["error-message"]}>{errorMessage}</p>
         )}
       </div>
     </div>
