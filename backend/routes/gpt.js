@@ -52,7 +52,7 @@ router.post("/performance", async (req, res) => {
     console.log(format);
     submitQuestion = await prompt.format(format);
     // 改行コード "\n" を削除
-    // submitQuestion = submitQuestion.replace(/\n/g, "");
+    submitQuestion = submitQuestion.replace(/\n/g, "");
     console.log(submitQuestion);
 
     try {
