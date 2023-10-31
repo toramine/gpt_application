@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import ReadData from "../components/ReadData";
 import TemplateFalse from "../components/TemplateFalse";
 import TemplateTrue from "../components/TemplateTrue";
 import Topbar from "../components/Topbar";
@@ -35,9 +36,16 @@ const Gpt = ({ data }) => {
   const [submitQuestion, setSubmitQuestion] = useState("");
   const [templateFlag, setTemplateFlag] = useState(false);
   const [queryResult, setQueryResult] = useState("");
+  const [selectedTemplate, setSelectedTemplate] = useState("");
+  const [selectedInputVariables, setSelectedInputVariables] = useState([]);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const toggleTemplateFlag = () => {
-    setTemplateFlag(!templateFlag); // true と false を切り替える
+  const falseVisible = () => {
+    setIsVisible(false);
+  };
+
+  const trueVisible = () => {
+    setIsVisible(true);
   };
 
   const updateQueryResult = (newResult) => {
@@ -73,8 +81,20 @@ const Gpt = ({ data }) => {
             gpt-4
           </button>
         </div>
-        <p>templateFlag: {templateFlag ? "true" : "false"}</p>
-        <button onClick={toggleTemplateFlag}>Toggle templateFlag</button>
+        <button className={styles.visibleButton} onClick={trueVisible}>
+          templateを選択する
+        </button>
+        <div className={isVisible ? styles.content : styles.hidden}>
+          <ReadData
+            data={data}
+            setTemplateFlag={setTemplateFlag}
+            setSelectedTemplate={setSelectedTemplate}
+            setSelectedInputVariables={setSelectedInputVariables}
+            selectedTemplate={selectedTemplate}
+            selectedInputVariables={selectedInputVariables}
+            falseVisible={falseVisible}
+          />
+        </div>
         {templateFlag ? (
           <TemplateTrue
             selectedButton={selectedButton}
@@ -82,6 +102,8 @@ const Gpt = ({ data }) => {
             setSubmitModel={setSubmitModel}
             setSubmitQuestion={setSubmitQuestion}
             updateQueryResult={updateQueryResult}
+            selectedTemplate={selectedTemplate}
+            selectedInputVariables={selectedInputVariables}
           />
         ) : (
           <TemplateFalse
